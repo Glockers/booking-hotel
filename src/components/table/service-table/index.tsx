@@ -1,7 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Form, Input, InputNumber, Popconfirm, Space, Table, message, TableProps} from 'antd';
-import {EditableCellProps, TypeItem, KeyReact} from "./types";
-import {CSVLink} from "react-csv";
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Input, InputNumber, message, Popconfirm, Space, Table, TableProps} from 'antd';
+import {EditableCellProps, IEditableColumnProps, ITableProps, IServices} from "../types";
 
 const EditableCell: React.FC<EditableCellProps> = ({
                                                        editing,
@@ -37,49 +36,30 @@ const EditableCell: React.FC<EditableCellProps> = ({
     );
 };
 
-const originData: TypeItem[] = [
-    {
-        key: '0',
-        name: 'Test',
-        age: 10,
-        address: 'London, Park Lane no. 0',
-    },
-    {
-        key: '1',
-        name: 'test',
-        age: 32,
-        address: 'London, Park Lane no. 1',
-    },
-]
-const TestTable: React.FC = () => {
+
+
+
+
+
+
+const TableService: React.FC<ITableProps<IServices>> = (props) => {
     const [form] = Form.useForm();
-    const [dataSource, setDataSource] = useState<TypeItem[]>([]);
     const [loading, setLoading] = useState(false)
-    const [count, setCount] = useState(2);
-    const [element, setElement] = useState<TypeItem | null>(null);
+    const [count, setCount] = useState<Number>();
+    const [element, setElement] = useState<IServices | null>(null);
     const [messageInfo, setMessageInfo] = useState<string>("")
     const [messageApi, contextHolder] = message.useMessage();
     const [editingKey, setEditingKey] = useState<any>('');
+    const isEditing = (record: IServices) => record.id === editingKey;
 
-    const isEditing = (record: TypeItem) => record.key === editingKey;
-
-    useEffect(() => {
-        setLoading(true)
-        loadData();
-        setLoading(false)
-    }, [])
-
-    const loadData = async () => {
-        const response = originData;
-        setDataSource(response);
-    }
 
     useEffect(() => {
         if (element != null) {
             try {
                 setLoading(true);
-                console.log(element);
                 setElement(null);
+                setCount(props.dataSource.length + 1)
+
                 setLoading(false);
                 success();
             } catch (e) {
@@ -104,9 +84,10 @@ const TestTable: React.FC = () => {
         });
     };
 
-    const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key ? item : setElement(item));
-        setDataSource(newData);
+    const handleDelete = (key: Number) => {
+        const newData: any = props.dataSource.filter((item: any) => item.id !== key ? item : setElement(item));
+        props.setDataSource(newData);
+        console.log(key)
         setMessageInfo("Удаление прошло успешно")
     };
 
@@ -115,18 +96,20 @@ const TestTable: React.FC = () => {
         setEditingKey('');
     };
 
-    const edit = (record: Partial<TypeItem> & { key: React.Key }) => {
-        form.setFieldsValue({name: '', age: '', address: '', ...record});
-        setEditingKey(record.key);
+    const edit = (record:IServices ) => {
+        form.setFieldsValue({
+            // name: '', age: '', address: '',
+            ...record
+        });
+        setEditingKey(record.id);
         setMessageInfo("Данные успешно изменены")
     };
 
-    const save = async (key: React.Key) => {
+    const save = async (key: Number) => {
         try {
-            const row = (await form.validateFields()) as TypeItem;
-
-            const newData = [...dataSource];
-            const index = newData.findIndex((item) => key === item.key);
+            const row = (await form.validateFields()) as IServices;
+            const newData = [...props.dataSource];
+            const index = newData.findIndex((item) => key === item.id);
             if (index > -1) {
                 const item: any = newData[index];
                 newData.splice(index, 1, {
@@ -134,11 +117,11 @@ const TestTable: React.FC = () => {
                     ...row
                 });
                 setElement(row);
-                setDataSource(newData);
+                props.setDataSource(newData);
                 setEditingKey('');
             } else {
                 newData.push(row);
-                setDataSource(newData);
+                props.setDataSource(newData);
                 setEditingKey('');
             }
         } catch (errInfo) {
@@ -146,52 +129,12 @@ const TestTable: React.FC = () => {
         }
     };
 
-    const defaultColumns: any[] = [
+    const defaultColumns: any = [
+        ...props.columns,
         {
-            title: 'Логин',
-            dataIndex: 'name',
-            editable: true,
-            sorter: {
-                compare: (a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name)
-            }
-        },
-        {
-            title: 'Имя',
-            dataIndex: 'name',
-            editable: true,
-            sorter: {
-                compare: (a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name)
-            }
-        },
-        // {
-        //     title: 'уьфшд',
-        //     dataIndex: 'age',
-        //     editable: true,
-        //     sorter: {
-        //         compare: (a: { age: number; }, b: { age: number; }) => a.age - b.age,
-        //         multiple: 2,
-        //     },
-        // },
-        {
-            title: 'email',
-            dataIndex: 'address',
-            editable: true,
-            sorter: {
-                compare: (a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name)
-            }
-        },
-        {
-            title: 'Роль',
-            dataIndex: 'address',
-            editable: true,
-            sorter: {
-                compare: (a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name)
-            }
-        },
-        {
-            title: 'operation',
+            title: 'Операции',
             dataIndex: 'operation',
-            render: (_: any, record: any) => {
+            render: (_: any, record: IServices) => {
                 const editable = isEditing(record);
                 return (
                     <>
@@ -199,7 +142,7 @@ const TestTable: React.FC = () => {
                         <Space>
                             {editable ? (
                                 <>
-                                    <Popconfirm title="Изменить данные?" onConfirm={() => save(record.key)}>
+                                    <Popconfirm title="Изменить данные?" onConfirm={() => save(record.id)}>
                                         <Button>Сохранить</Button>
                                     </Popconfirm>
                                     <Button onClick={cancel}>Отмена</Button>
@@ -207,7 +150,7 @@ const TestTable: React.FC = () => {
                             ) : (
                                 <>
                                     <Popconfirm title="Удалить запись?"
-                                                onConfirm={() => handleDelete(record.key)}>
+                                                onConfirm={() => handleDelete(record.id)}>
                                         <Button>Удалить</Button>
                                     </Popconfirm>
 
@@ -224,32 +167,19 @@ const TestTable: React.FC = () => {
     ];
 
 
-    const handleAdd =  useCallback(()=>{
-        const newData: TypeItem = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
-        setElement(newData);
-        setMessageInfo("Запись добавлена")
-    }, [dataSource])
-
     const components = {
         body: {
             cell: EditableCell,
         },
     }
 
-    const mergedColumns = defaultColumns.map((col) => {
+    const mergedColumns = defaultColumns.map((col: any) => {
         if (!col.editable) {
             return col;
         }
         return {
             ...col,
-            onCell: (record: TypeItem) => ({
+            onCell: (record: IServices) => ({
                 record,
                 inputType: col.dataIndex === 'age' ? 'number' : 'text',
                 dataIndex: col.dataIndex,
@@ -259,36 +189,30 @@ const TestTable: React.FC = () => {
         };
     });
 
-    const onChange: TableProps<TypeItem>['onChange'] = (pagination, filters, sorter, extra) => {
+    const onChange: TableProps<IServices>['onChange'] = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
     };
 
+
     return (
         <>
-            {contextHolder}
-            <Space style={{marginBottom: 16}}>
-                <Button onClick={handleAdd} type="primary">
-                    Добавить
-                </Button>
-                <Button type="primary">
-                    <CSVLink data={dataSource}>Экспортировать</CSVLink>
-                </Button>
 
-            </Space>
+            {contextHolder}
 
             <Form form={form} component={false}>
 
                 <Table
                     bordered
-                    dataSource={dataSource}
+                    dataSource={props.dataSource}
                     columns={mergedColumns}
                     components={components}
                     loading={loading}
                     onChange={onChange}
+                    rowKey={record => record.id.toString()}
                 />
             </Form>
         </>
     );
 };
 
-export default TestTable;
+export default TableService;

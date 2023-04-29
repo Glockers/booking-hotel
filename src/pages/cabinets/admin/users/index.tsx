@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as React from "react";
-import TestTable from "../../../../components/table/test";
+import UserTable from "../../../../components/table/user-table";
 
 
 const Header = styled.h1`
@@ -11,7 +11,7 @@ export function UsersPage() {
     return (
         <>
             <Header>Управление пользователями</Header>
-            <TestTable/>
+            <UserTable/>
             {/*<TableFactory initialRows={initialRows} columns={userColumn}/>*/}
         </>
     )

@@ -1,8 +1,6 @@
 import React, {FC} from 'react'
 import styled from 'styled-components'
 import {useNavigate} from "react-router-dom";
-import Footer from "../../components/footer";
-import Header from "../../components/header";
 
 const NotFoundContainer = styled.div`
   display: flex;

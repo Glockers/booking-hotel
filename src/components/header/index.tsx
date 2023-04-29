@@ -32,25 +32,13 @@ const NavItem = styled.li`
   }
 `;
 
-    const NavLink = styled.a`
-      color: #fff;
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 0 10px;
-    `;
 
 const NavigationContentStyle = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: right;
   gap: 40px;
-  width: 70%;
-`;
-
-const NavigationProfileStyle = styled.div`
-  display: flex;
-  flex-direction: row;
+  width: 100%;
 `;
 
 function Header(): JSX.Element {
@@ -67,19 +55,13 @@ function Header(): JSX.Element {
                                 <Link to={"/catalog"} replace>Каталог</Link>
                             </NavItem>
                             <NavItem>
-                                <Link to="/contacts" replace>Контакты</Link>
+                                <Link to={"/profile"}>
+                                    <UserOutlined/>
+                                </Link>
                             </NavItem>
                         </NavigationContentStyle>
-                        <NavigationProfileStyle>
-                            <Link to={"/profile"}>
-                                <UserOutlined/>
-                            </Link>
-                        </NavigationProfileStyle>
                     </ul>
-
                 </Nav>
-
-
             </HeaderContainer>
         </>
 

@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, InputNumber, message, Popconfirm, Space, Table, TableProps} from 'antd';
-import {EditableCellProps, IBookRoom, IEditableColumnProps, ITableProps, IRoom, IServices} from "../types";
-import {CRUDOperation, IPropsTableCRUD} from "../../../common/types/crud-operation";
-import {useNotificationContext} from "../../../utils/context/notificationContext";
+import {EditableCellProps, IEditableColumnProps, ITableProps, IRoom, IServices} from "../types";
 
 const EditableCell: React.FC<EditableCellProps> = ({
                                                        editing,
@@ -25,7 +23,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
                     rules={[
                         {
                             required: true,
-                            message: `Пожалуйста введите "${title}"!`,
+                            message: `Please Input ${title}!`,
                         },
                     ]}
                 >
@@ -39,56 +37,42 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 
-const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
+const TableRoom = <T extends {id: number}>(props: ITableProps<T>) => {
     const [form] = Form.useForm();
-    const [element, setElement] = useState<T>({} as T);
+    const [element, setElement] = useState<T >({} as T);
     const [editingKey, setEditingKey] = useState<any>('');
     const isEditing = (record: T) => record.id === editingKey;
-    const {showMessage} = useNotificationContext();
-    const [loading, setLoading] = useState<boolean>(false)
+    const { showMessage = () => {} } = props;
 
     const handleDelete = (key: Number) => {
-        try {
-            setLoading(true)
-            const newData = props.dataSource.filter((item: any) => item.id !== key ? item : setElement(item));
-            if (element) {
-                props.setDataSource(newData);
-                props.deleteHandler(element);
-            } else {
-                showMessage("Поля не могут быть пустыми", "error")
-            }
-            setLoading(false)
-
-        } catch (e) {
-            showMessage("Произошла ошибка при удалении!", "error")
-            setLoading(false)
-        }
+        const newData: any = props.dataSource.filter((item: any) => item.id !== key ? item : setElement(item));
+        props.setDataSource(newData);
+        console.log("Запрос на удаление комнаты...")
+        showMessage("Информация о комнате была удалена.", "success")
+        console.log(key)
     };
 
     const cancel = () => {
         setEditingKey('Произошла ошибка');
         showMessage("Отмена редактирование", "error")
         setEditingKey('');
+
     };
+    useEffect(()=>console.log(props), [props])
 
-    useEffect(() => console.log(props), [props])
-
-    const edit = (record: T) => {
-        setLoading(true)
+    const edit = (record:T ) => {
         form.setFieldsValue({
             // name: '', age: '', address: '',
             ...record
         });
         setEditingKey(record.id);
-        setLoading(false)
     };
 
     const save = async (key: Number) => {
         try {
-            setLoading(true)
-            const row: T = (await form.validateFields()) as T;
-            const newData: T[] = [...props.dataSource];
-            const index: number = newData.findIndex((item) => key === item.id);
+            const row = (await form.validateFields()) as T;
+            const newData = [...props.dataSource];
+            const index = newData.findIndex((item) => key === item.id);
             if (index > -1) {
                 const item: any = newData[index];
                 newData.splice(index, 1, {
@@ -96,21 +80,23 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
                     ...row
                 });
                 setElement(row);
+                props.setDataSource(newData);
+                showMessage("Информация о комнате изменена", "success")
+                setEditingKey('');
             } else {
                 newData.push(row);
+                props.setDataSource(newData);
+                showMessage("Информация о комнате изменена", "success")
+                setEditingKey('');
             }
-            setEditingKey('');
-            props.setDataSource(newData);
-            props.updateHandler(newData[index], row)
-            setLoading(false)
+            console.log("Запрос на изменение информации о комнате...")
         } catch (errInfo) {
-            showMessage("Произошла ошибка при изменении!", "error")
+            showMessage("Произошла ошибка!", "error")
             console.log('Validate Failed:', errInfo);
-            setLoading(false)
         }
     };
 
-    const defaultColumns = [
+    const defaultColumns: any = [
         ...props.columns,
         {
             title: 'Операции',
@@ -119,6 +105,7 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
                 const editable = isEditing(record);
                 return (
                     <>
+
                         <Space>
                             {editable ? (
                                 <>
@@ -178,12 +165,13 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
         <>
 
             <Form form={form} component={false}>
+
                 <Table
                     bordered
                     dataSource={props.dataSource}
                     columns={mergedColumns}
                     components={components}
-                    loading={loading}
+                    // loading={loading}
                     onChange={onChange}
                     rowKey={record => record.id.toString()}
                 />
@@ -192,4 +180,4 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
     );
 };
 
-export default TableFactory;
+export default TableRoom;

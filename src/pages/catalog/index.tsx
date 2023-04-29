@@ -1,8 +1,8 @@
 import React from 'react';
 import {Button, Tabs, TabsProps} from "antd";
 import {Layout} from "../../common/style/page";
-import ServiceCatalogPage from "./service";
-import RoomCatalogPage from "./rooms";
+import ServiceCatalogPage from "./rooms";
+import RoomCatalogPage from "./service";
 
 const onChange = (key: string) => {
     console.log(key);
@@ -16,7 +16,7 @@ const items: TabsProps['items'] = [
     },
     {
         key: '2',
-        label: `Сервисы`,
+        label: `Услуги`,
         children: <ServiceCatalogPage/>,
     },
 ];

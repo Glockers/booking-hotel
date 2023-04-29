@@ -1,12 +1,12 @@
 import {HomeOutlined, RoomServiceOutlined, SettingsOutlined} from '@mui/icons-material'
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
-import {AlertOutlined, AreaChartOutlined, TeamOutlined} from "@ant-design/icons";
+import {AlertOutlined, AreaChartOutlined, RiseOutlined, TeamOutlined, WalletOutlined} from "@ant-design/icons";
 
 export const adminNavMenu = [
     {
-        name: 'Главная',
+        name: 'Dashboard',
         icon: <HomeOutlined />,
-        path: '/',
+        path: '/dashboard',
     },
     {
         name: 'Управление Пользователями',
@@ -20,23 +20,23 @@ export const adminNavMenu = [
         path: '/services',
 
     },
-    {
-        name: 'Управление обращениями',
-        icon: <TeamOutlined />,
-        path: '/appeals',
 
-    },
     {
         name: 'Управление бронированием',
-        icon:<AlertOutlined />,
+        icon:<TeamOutlined />,
         path: '/reservation',
 
     },
     {
-        name: 'Отчеты',
-        icon:<AreaChartOutlined />,
-        path: '/report',
+        name: 'Управление номерами',
+        icon:<AlertOutlined />,
+        path: '/room',
 
+    },
+    {
+        name: 'Отчеты',
+        icon:<RiseOutlined />,
+        path: '/report',
     },
 ]
 
@@ -48,15 +48,16 @@ export const clientNavMenu = [
         path: '/',
     },
     {
-        name: 'USER',
-        icon: <PermIdentityOutlinedIcon />,
-        path: '/cabinet/users',
+        name: 'История услуг',
+        icon:<WalletOutlined />,
+        path: '/my-services',
 
     },
-    {
-        name: 'УUSER',
-        icon: <RoomServiceOutlined />,
-        path: '/services',
 
-    }
+    {
+        name: 'История Бронирований',
+        icon:<AlertOutlined />,
+        path: '/my-book',
+
+    },
 ]

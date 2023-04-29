@@ -38,17 +38,11 @@ const ContactLink = styled.a`
   }
 `
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 
-`
 
 
 const Footer: FC = (): JSX.Element => {
     return (
-        <Wrapper>
             <FooterContainer>
                 <FooterText>© 2023 My App. All rights reserved.</FooterText>
                 <ContactInfo>
@@ -62,8 +56,6 @@ const Footer: FC = (): JSX.Element => {
                     <ContactLink href='tel:+375256656131'>+375 (25) 665-61-31</ContactLink>
                 </ContactInfo>
             </FooterContainer>
-
-        </Wrapper>
     )
 }
 

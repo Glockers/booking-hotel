@@ -5,27 +5,32 @@ import * as React from "react";
 import Footer from "../../../components/footer";
 import {memo} from "react";
 
-export const StyleRoot = styled.div`
+const StyleRoot = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 `
 
-export const StyleWrapperPage = styled.div`
+const StyleWrapperPage = styled.div`
+  flex: 1;
   display: flex;
   height: 100%;
 `
 
 
-export const StyleWrapperContent = styled.div`
+const StyleWrapperContent = styled.div`
+  flex: 1;
   padding: 30px 60px;
   width: 100%;
 `
 
-export const Layout = memo((props: any)=>{
+
+export const Layout = memo((props: any) => {
     return (
         <>
             <StyleRoot>
-                <Header/>
+                    <Header/>
                 <StyleWrapperPage>
                     <Sidebar/>
                     <StyleWrapperContent>

@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, InputNumber, message, Popconfirm, Space, Table, TableProps} from 'antd';
-import {EditableCellProps, IBookRoom, IEditableColumnProps, ITableProps, IRoom, IServices} from "../types";
-import {CRUDOperation, IPropsTableCRUD} from "../../../common/types/crud-operation";
-import {useNotificationContext} from "../../../utils/context/notificationContext";
+import {EditableCellProps, IAppeal, ITableProps, IServices} from "../types";
+import {CSVLink} from "react-csv";
+import {faker} from "@faker-js/faker";
+import {STATUS_APPEAL} from "../../../common/enum/appeal";
 
 const EditableCell: React.FC<EditableCellProps> = ({
                                                        editing,
@@ -25,7 +26,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
                     rules={[
                         {
                             required: true,
-                            message: `Пожалуйста введите "${title}"!`,
+                            message: `Please Input ${title}!`,
                         },
                     ]}
                 >
@@ -39,56 +40,87 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 
-const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
+
+
+
+const TableAppeal: React.FC<ITableProps<IAppeal>> = (props) => {
     const [form] = Form.useForm();
-    const [element, setElement] = useState<T>({} as T);
+    // const [dataSource, setDataSource] = useState<IAppeal[]>([]);
+    const [loading, setLoading] = useState(false)
+    const [count, setCount] = useState<Number>();
+    const [element, setElement] = useState<IAppeal | null>(null);
+    const [messageInfo, setMessageInfo] = useState<string>("")
+    const [messageApi, contextHolder] = message.useMessage();
     const [editingKey, setEditingKey] = useState<any>('');
-    const isEditing = (record: T) => record.id === editingKey;
-    const {showMessage} = useNotificationContext();
-    const [loading, setLoading] = useState<boolean>(false)
+
+    const isEditing = (record: IAppeal) => record.id === editingKey;
+
+    useEffect(() => {
+        setLoading(true)
+        // props.setDataSource(originData)
+
+        // Загрузка данных
+        setLoading(false)
+    }, [])
+
+
+    useEffect(() => {
+        if (element != null) {
+            try {
+                setLoading(true);
+                setElement(null);
+                setCount(props.dataSource.length + 1)
+
+                setLoading(false);
+                success();
+            } catch (e) {
+                error();
+            }
+            setMessageInfo("")
+        }
+
+    }, [element]);
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: messageInfo,
+        });
+    };
+
+    const error = () => {
+        messageApi.open({
+            type: 'error',
+            content: 'Произошла ошибка',
+        });
+    };
 
     const handleDelete = (key: Number) => {
-        try {
-            setLoading(true)
-            const newData = props.dataSource.filter((item: any) => item.id !== key ? item : setElement(item));
-            if (element) {
-                props.setDataSource(newData);
-                props.deleteHandler(element);
-            } else {
-                showMessage("Поля не могут быть пустыми", "error")
-            }
-            setLoading(false)
-
-        } catch (e) {
-            showMessage("Произошла ошибка при удалении!", "error")
-            setLoading(false)
-        }
+        const newData = props.dataSource.filter((item) => item.id !== key ? item : setElement(item));
+        props.setDataSource(newData);
+        console.log(key)
+        setMessageInfo("Удаление прошло успешно")
     };
 
     const cancel = () => {
         setEditingKey('Произошла ошибка');
-        showMessage("Отмена редактирование", "error")
         setEditingKey('');
     };
 
-    useEffect(() => console.log(props), [props])
-
-    const edit = (record: T) => {
-        setLoading(true)
+    const edit = (record: Partial<IAppeal> & { key: Number }) => {
         form.setFieldsValue({
             // name: '', age: '', address: '',
             ...record
         });
         setEditingKey(record.id);
-        setLoading(false)
+        setMessageInfo("Данные успешно изменены")
     };
 
     const save = async (key: Number) => {
         try {
-            setLoading(true)
-            const row: T = (await form.validateFields()) as T;
-            const newData: T[] = [...props.dataSource];
-            const index: number = newData.findIndex((item) => key === item.id);
+            const row = (await form.validateFields()) as IAppeal;
+            const newData = [...props.dataSource];
+            const index = newData.findIndex((item) => key === item.id);
             if (index > -1) {
                 const item: any = newData[index];
                 newData.splice(index, 1, {
@@ -96,29 +128,28 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
                     ...row
                 });
                 setElement(row);
+                props.setDataSource(newData);
+                setEditingKey('');
             } else {
                 newData.push(row);
+                props.setDataSource(newData);
+                setEditingKey('');
             }
-            setEditingKey('');
-            props.setDataSource(newData);
-            props.updateHandler(newData[index], row)
-            setLoading(false)
         } catch (errInfo) {
-            showMessage("Произошла ошибка при изменении!", "error")
             console.log('Validate Failed:', errInfo);
-            setLoading(false)
         }
     };
 
-    const defaultColumns = [
+    const defaultColumns: any = [
         ...props.columns,
         {
-            title: 'Операции',
+            title: 'operation',
             dataIndex: 'operation',
-            render: (_: any, record: T) => {
+            render: (_: any, record: any) => {
                 const editable = isEditing(record);
                 return (
                     <>
+
                         <Space>
                             {editable ? (
                                 <>
@@ -159,7 +190,7 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
         }
         return {
             ...col,
-            onCell: (record: T) => ({
+            onCell: (record: IAppeal) => ({
                 record,
                 inputType: col.dataIndex === 'age' ? 'number' : 'text',
                 dataIndex: col.dataIndex,
@@ -169,15 +200,31 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
         };
     });
 
-    const onChange: TableProps<T>['onChange'] = (pagination, filters, sorter, extra) => {
+    const onChange: TableProps<IAppeal>['onChange'] = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
     };
+
+
+    // const handleAdd = () => {
+    //     const newData: IAppeal = {
+    //         id: dataSource.length + 1,
+    //
+    //     };
+    //     setDataSource([...dataSource, newData]);
+    //     setCount(dataSource.length + 1);
+    //     setElement(newData);
+    //     setMessageInfo("Запись добавлена")
+    // }
 
 
     return (
         <>
 
+            {contextHolder}
+
+
             <Form form={form} component={false}>
+
                 <Table
                     bordered
                     dataSource={props.dataSource}
@@ -185,11 +232,11 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
                     components={components}
                     loading={loading}
                     onChange={onChange}
-                    rowKey={record => record.id.toString()}
+                    rowKey={record => 13}
                 />
             </Form>
         </>
     );
 };
 
-export default TableFactory;
+export default TableAppeal;
