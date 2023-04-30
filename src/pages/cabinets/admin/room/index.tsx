@@ -7,22 +7,25 @@ import TableRoom from "../../../../components/table/room-table";
 import {columns} from "./config";
 import {Typography} from "@mui/material";
 import styled from "styled-components";
-import {faker} from "@faker-js/faker";
+import {$api, axiosPublic} from "../../../../utils/axios";
 
-const dataFromServer: IRoom[] = [
-    {
-        id: 1,
-        class: TYPE_CLASS_ROOM.STANDARD,
-        count_place: 3,
-        price: parseFloat(faker.commerce.price()),
-    },
-    {
-        id: 2,
-        class: TYPE_CLASS_ROOM.LUX,
-        count_place: 3,
-        price: parseFloat(faker.commerce.price()),
-    },
-]
+import {Simulate} from "react-dom/test-utils";
+import {useNotificationContext} from "../../../../utils/context/notificationContext";
+
+// const dataFromServer: IRoom[] = [
+//     {
+//         id: 1,
+//         room_class: TYPE_CLASS_ROOM.STANDARD,
+//         count_place: 3,
+//         price: parseFloat(faker.commerce.price()),
+//     },
+//     {
+//         id: 2,
+//         room_class: TYPE_CLASS_ROOM.LUX,
+//         count_place: 3,
+//         price: parseFloat(faker.commerce.price()),
+//     },
+// ]
 
 const WrapperContent = styled.div`
   display: flex;
@@ -52,46 +55,56 @@ const WrapperPrice = styled.div`
 const RoomPage = () => {
     const [dataSource, setDataSource] = useState<IRoom[]>([]);
     const [formData, setFormData] = useState<IRoom>({} as IRoom);
-    const {MessageContainer, showMessage, contextHolder} = useNotification();
+    const {showMessage} = useNotificationContext();
+
 
 
     useEffect(() => {
-        console.log("Загрузка с сервера...", dataFromServer)
-        setDataSource(dataFromServer)
+        try {
+            // console.log("Загрузка с сервера...", dataFromServer)
+            $api.get<IRoom[]>("/api/room/getAll")
+                .then(value => {
+                    console.log("[GET]", )
+                    setDataSource(value.data)
+                    showMessage("Данные загружены", "success");
+                }).catch(error => console.error(error))
+        } catch (e) {
+            showMessage("Произошла ошибка при загрузке данных", "error");
+        }
+
     }, [])
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
         const data = {
             count_place: formData.count_place,
-            class: formData.class,
-            id: dataSource[dataSource.length - 1].id + 1,
+            roomClass: formData.roomClass,
             price: formData.price,
         }
-        setDataSource((prevData) => {
-            return [...prevData, data];
-        });
-        console.log("Отправка на сервер", data)
-        showMessage("Комната добавлена", "success");
+
+        await $api.post("/api/room/addRoom", data)
+            .then(value => {
+                showMessage("Информация о номера была добавлена.", "success")
+                console.log(value.data)
+                setDataSource((prevData) => {
+                    return [...prevData, value.data];
+                });
+            }).catch(error => console.error(error))
     }
 
     const handleInputChange: any = (value: any, name: string) => {
-        // console.log(name, value)
-        setFormData({ ...formData, [name]: value });
+        setFormData({...formData, [name]: value});
     }
 
-    const handleCalculatePrice = ()=>{
-        const x = formData.class === TYPE_CLASS_ROOM.STANDARD ? 1 : formData.class === TYPE_CLASS_ROOM.PREMIUM ? 2: 3
-        setFormData({ ...formData, price: parseFloat((formData.price * x * 0.13*formData.count_place).toFixed(2))}) ;
+    const handleCalculatePrice = () => {
+        const x = formData.roomClass === TYPE_CLASS_ROOM.STANDARD ? 1 : formData.roomClass === TYPE_CLASS_ROOM.PREMIUM ? 2 : 3
+        setFormData({...formData, price: parseFloat((formData.price * x * 0.13 * formData.count_place).toFixed(2))});
     }
     return (
         <>
-            {contextHolder}
             <WrapperAction>
                 <Button onClick={handleAdd}> Добавить </Button>
             </WrapperAction>
             <WrapperContent>
-
-
                 <ElementWrapper>
                     <Typography fontWeight={"bold"}>
                         Количество мест в комнате
@@ -108,9 +121,9 @@ const RoomPage = () => {
                         Выберите класс номера
                     </Typography>
                     <Select
-                        value={formData.class}
+                        value={formData.roomClass}
                         style={{width: "auto"}}
-                        onChange={(value) => handleInputChange(value, "class")}
+                        onChange={(value) => handleInputChange(value, "roomClass")}
                         options={[
                             {value: TYPE_CLASS_ROOM.STANDARD, label: 'Стандарт'},
                             {value: TYPE_CLASS_ROOM.PREMIUM, label: 'Премиум'},

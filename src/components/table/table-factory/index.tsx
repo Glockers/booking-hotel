@@ -71,7 +71,7 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
         setEditingKey('');
     };
 
-    useEffect(() => console.log(props), [props])
+    // useEffect(() => console.log(props), [props])
 
     const edit = (record: T) => {
         setLoading(true)

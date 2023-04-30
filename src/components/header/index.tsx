@@ -64,9 +64,7 @@ function Header(): JSX.Element {
                 </Nav>
             </HeaderContainer>
         </>
-
     )
-        ;
 }
 
 

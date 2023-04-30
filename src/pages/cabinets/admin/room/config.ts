@@ -14,12 +14,12 @@ export const columns: IEditableColumnProps<IRoom>[] = [
     },
     {
         title: 'Класс номера',
-        dataIndex: 'class',
+        dataIndex: 'roomClass',
         editable: true,
         sorter: {
             compare: (a: IRoom, b: IRoom) => {
-                if (a.class && b.class) {
-                    return a.class.localeCompare(b.class);
+                if (a.roomClass && b.roomClass) {
+                    return a.roomClass.localeCompare(b.roomClass);
                 }
                 return 0;
             }

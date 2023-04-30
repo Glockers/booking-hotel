@@ -1,6 +1,6 @@
-import {HomeOutlined, RoomServiceOutlined, SettingsOutlined} from '@mui/icons-material'
+import {HomeOutlined, RoomServiceOutlined} from '@mui/icons-material'
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
-import {AlertOutlined, AreaChartOutlined, RiseOutlined, TeamOutlined, WalletOutlined} from "@ant-design/icons";
+import {AlertOutlined, RiseOutlined, TeamOutlined, WalletOutlined} from "@ant-design/icons";
 
 export const adminNavMenu = [
     {

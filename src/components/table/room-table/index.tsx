@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, InputNumber, message, Popconfirm, Space, Table, TableProps} from 'antd';
 import {EditableCellProps, IEditableColumnProps, ITableProps, IRoom, IServices} from "../types";
+import {$api, axiosPublic} from "../../../utils/axios";
+import {useNotificationContext} from "../../../utils/context/notificationContext";
 
 const EditableCell: React.FC<EditableCellProps> = ({
                                                        editing,
@@ -37,20 +39,30 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 
-const TableRoom = <T extends {id: number}>(props: ITableProps<T>) => {
+const TableRoom = <T extends { id: number }>(props: ITableProps<T>) => {
     const [form] = Form.useForm();
-    const [element, setElement] = useState<T >({} as T);
+    const [element, setElement] = useState<T>({} as T);
     const [editingKey, setEditingKey] = useState<any>('');
     const isEditing = (record: T) => record.id === editingKey;
-    const { showMessage = () => {} } = props;
+    const {showMessage} = useNotificationContext();
 
-    const handleDelete = (key: Number) => {
-        const newData: any = props.dataSource.filter((item: any) => item.id !== key ? item : setElement(item));
-        props.setDataSource(newData);
-        console.log("Запрос на удаление комнаты...")
-        showMessage("Информация о комнате была удалена.", "success")
-        console.log(key)
+
+    const handleDelete = async (key: Number) => {
+        const elementToDelete = props.dataSource.find((item: any) => item.id === key);
+        if (!elementToDelete) {
+            showMessage("Элемент не выбран!", "error")
+            return;
+        }
+        await $api.post("/api/room/deleteRoom", elementToDelete)
+            .then(value => {
+                showMessage("Информация о комнате была удалена.", "success")
+
+            }).catch(error => console.error(error))
+        const newData = props.dataSource.filter((item: any) => item.id !== key);
+        await props.setDataSource(newData);
     };
+
+    // useEffect(() => console.log(element),  [element])
 
     const cancel = () => {
         setEditingKey('Произошла ошибка');
@@ -58,9 +70,9 @@ const TableRoom = <T extends {id: number}>(props: ITableProps<T>) => {
         setEditingKey('');
 
     };
-    useEffect(()=>console.log(props), [props])
+    useEffect(()=>console.log(element), [element])
 
-    const edit = (record:T ) => {
+    const edit = (record: T) => {
         form.setFieldsValue({
             // name: '', age: '', address: '',
             ...record
@@ -70,29 +82,33 @@ const TableRoom = <T extends {id: number}>(props: ITableProps<T>) => {
 
     const save = async (key: Number) => {
         try {
-            const row = (await form.validateFields()) as T;
+            const row = (await form.validateFields());
             const newData = [...props.dataSource];
             const index = newData.findIndex((item) => key === item.id);
+
             if (index > -1) {
-                const item: any = newData[index];
+                const item = newData[index];
                 newData.splice(index, 1, {
                     ...item,
                     ...row
                 });
-                setElement(row);
-                props.setDataSource(newData);
-                showMessage("Информация о комнате изменена", "success")
+
+
                 setEditingKey('');
             } else {
                 newData.push(row);
-                props.setDataSource(newData);
-                showMessage("Информация о комнате изменена", "success")
                 setEditingKey('');
             }
-            console.log("Запрос на изменение информации о комнате...")
+            console.log(newData[index])
+
+            await $api.put("/api/room/updateRoom", newData[index])
+                .then(value => {
+                    props.setDataSource(newData);
+                    showMessage("Информация о комнате изменена", "success")
+                }).catch(error => console.error(error))
         } catch (errInfo) {
             showMessage("Произошла ошибка!", "error")
-            console.log('Validate Failed:', errInfo);
+            console.error('Validate Failed:', errInfo);
         }
     };
 
@@ -157,7 +173,7 @@ const TableRoom = <T extends {id: number}>(props: ITableProps<T>) => {
     });
 
     const onChange: TableProps<T>['onChange'] = (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
+        // console.log('params', pagination, filters, sorter, extra);
     };
 
 

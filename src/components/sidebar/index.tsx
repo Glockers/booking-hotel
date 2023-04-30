@@ -8,7 +8,7 @@ const Sidebar = (): JSX.Element => {
     const auth = useAuth();
     return auth ? (
             <>
-                { auth === ROLES.ADMIN ? <AdminSidebar/> : auth === ROLES.USER ? <ClientSidebar/> : <></>}
+                {auth === ROLES.ADMIN ? <AdminSidebar/> : auth === ROLES.USER ? <ClientSidebar/> : <></>}
             </>
         ) :
         (<></>)

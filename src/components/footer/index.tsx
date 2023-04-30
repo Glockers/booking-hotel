@@ -39,23 +39,21 @@ const ContactLink = styled.a`
 `
 
 
-
-
 const Footer: FC = (): JSX.Element => {
     return (
-            <FooterContainer>
-                <FooterText>© 2023 My App. All rights reserved.</FooterText>
-                <ContactInfo>
-                    <ContactIcon className='fas fa-envelope'/>
-                    <ContactLink href='gmail:glockerwork@gmail.co'>
-                        glockerwork@gmail.com
-                    </ContactLink>
-                </ContactInfo>
-                <ContactInfo>
-                    <ContactIcon className='fas fa-phone'/>
-                    <ContactLink href='tel:+375256656131'>+375 (25) 665-61-31</ContactLink>
-                </ContactInfo>
-            </FooterContainer>
+        <FooterContainer>
+            <FooterText>© 2023 My App. All rights reserved.</FooterText>
+            <ContactInfo>
+                <ContactIcon className='fas fa-envelope'/>
+                <ContactLink href='gmail:glockerwork@gmail.co'>
+                    glockerwork@gmail.com
+                </ContactLink>
+            </ContactInfo>
+            <ContactInfo>
+                <ContactIcon className='fas fa-phone'/>
+                <ContactLink href='tel:+375256656131'>+375 (25) 665-61-31</ContactLink>
+            </ContactInfo>
+        </FooterContainer>
     )
 }
 

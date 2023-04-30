@@ -12,7 +12,6 @@ export function UsersPage() {
         <>
             <Header>Управление пользователями</Header>
             <UserTable/>
-            {/*<TableFactory initialRows={initialRows} columns={userColumn}/>*/}
         </>
     )
 }

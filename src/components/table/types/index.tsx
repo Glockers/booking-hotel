@@ -1,7 +1,6 @@
 import React from "react";
 import {ROLES} from "../../../common/role";
 import {ColumnProps} from "antd/es/table";
-import {STATUS_APPEAL} from "../../../common/enum/appeal";
 import {TYPE_CLASS_ROOM} from "../../../common/enum/room-class";
 import {IUser} from "../../../common/types/IStore";
 import {NoticeType} from "antd/es/message/interface";
@@ -23,7 +22,7 @@ export interface IEditableColumnProps<T> extends ColumnProps<T> {
 
 
 export interface TypeItem {
-    key: Number;
+    key: number;
     name: string;
     email: string;
     login: string;
@@ -53,20 +52,10 @@ export interface IServices {
 export interface IRoom {
     id: number;
     count_place: number;
-    class: TYPE_CLASS_ROOM
+    roomClass: TYPE_CLASS_ROOM,
     price: number,
     status?: ENUM_ROOM_FREEDOM
 }
-
-
-export interface IAppeal {
-    id?: number;
-    user?: IUser;
-    service?: IServices;
-    room?: IRoom;
-    status?: STATUS_APPEAL
-}
-
 
 
 export interface IBookRoom {

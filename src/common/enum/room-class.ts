@@ -4,6 +4,3 @@ export enum TYPE_CLASS_ROOM {
     LUX = "LUX"
 }
 
-// PENDING = 'PENDING',
-//     SUCCESSFUL = 'SUCCESSFUL',
-//     REJECTED = 'REJECTED'
