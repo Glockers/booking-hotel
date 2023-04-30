@@ -2,7 +2,7 @@ import {ITableProps} from "../../components/table/types";
 
 export interface CRUDOperation<T> {
     saveHandler: (data: T) => void;
-    updateHandler: (oldData: T, newData: T) => void;
+    updateHandler: (newData: T) => void;
     deleteHandler: (data: T) => void;
 }
 

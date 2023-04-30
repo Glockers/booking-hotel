@@ -8,7 +8,7 @@ import {faker} from "@faker-js/faker";
 import {ENUM_ROOM_FREEDOM} from "../../../../common/enum/room";
 import {ENUM_RESERVATION} from "../../../../common/enum/book";
 import {ROLES} from "../../../../common/role";
-import {IUser} from "../../../../common/types/IStore";
+import {IUserAuth} from "../../../../common/types/IStore";
 import {CRUDOperation} from "../../../../common/types/crud-operation";
 import {useNotificationContext} from "../../../../utils/context/notificationContext";
 
@@ -16,11 +16,11 @@ import {useNotificationContext} from "../../../../utils/context/notificationCont
 
 
 
-
-interface IPropsReservation extends ITableProps<IBookRoom>, CRUDOperation<IBookRoom> {
-
-}
-
+//
+// interface IPropsReservation extends ITableProps<IBookRoom>, CRUDOperation<IBookRoom> {
+//
+// }
+//
 
 const ReservationPage: React.FC = () => {
     // const [dataSource, setDataSource] = useState<IBookRoom[]>([]);

@@ -14,7 +14,6 @@ import GuestCabinet from "./cabinets/guest";
 import PageHistoryServices from "./cabinets/user/services";
 import PageHistoryBook from "./cabinets/user/book";
 import ServicePage from "./cabinets/admin/services";
-import PageAppeal from "./cabinets/admin/appeals";
 import PageReservation from "./cabinets/admin/reservation";
 import PageReport from "./cabinets/admin/report";
 import PageAdminDashboard from "./cabinets/admin/dashboard";
@@ -49,7 +48,6 @@ const Routing = () => {
                     <Route path="/profile" element={<ProfilePage/>}/>
                     <Route path="/dashboard" element={<PageAdminDashboard/>}/>
                     <Route path="/services" element={<ServicePage/>}/>
-                    <Route path="/appeals" element={<PageAppeal/>}/>
                     <Route path="/reservation" element={<PageReservation/>}/>
                     <Route path="/report" element={<PageReport/>}/>
                     <Route path="/room" element={<RoomPage/>}/>

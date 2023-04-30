@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import {IRepositoryStateAuth, IUser} from "../../../common/types/IStore";
+import {IRepositoryStateAuth, IUserAuth} from "../../../common/types/IStore";
 import {loginUser, registerUser} from "../../thunks/auth";
 import {ROLES} from "../../../common/role";
 
 
 const initialState: IRepositoryStateAuth = {
-    user: {} as IUser,
+    user: {} as IUserAuth,
     isLogged: false,
     isLoading: false,
 }

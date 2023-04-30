@@ -2,7 +2,7 @@ import React from "react";
 import {ROLES} from "../../../common/role";
 import {ColumnProps} from "antd/es/table";
 import {TYPE_CLASS_ROOM} from "../../../common/enum/room-class";
-import {IUser} from "../../../common/types/IStore";
+import {IUserAuth} from "../../../common/types/IStore";
 import {NoticeType} from "antd/es/message/interface";
 import {ENUM_RESERVATION} from "../../../common/enum/book";
 import {ENUM_ROOM_FREEDOM} from "../../../common/enum/room";
@@ -29,7 +29,8 @@ export interface TypeItem {
     role: ROLES;
 }
 
-export type TypeUser = Required<IUser>
+
+export type IUser = Required<Omit<IUserAuth, 'password'>>
 
 
 export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -63,7 +64,7 @@ export interface IBookRoom {
     startDate: Date;
     endDate: Date;
     guestsCount: number;
-    user: TypeUser;
+    user: IUser;
     room: IRoom;
     status: ENUM_RESERVATION
 }

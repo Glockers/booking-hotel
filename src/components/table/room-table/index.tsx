@@ -99,7 +99,7 @@ const TableRoom = <T extends { id: number }>(props: ITableProps<T>) => {
                 newData.push(row);
                 setEditingKey('');
             }
-            console.log(newData[index])
+            // console.log(newData[index])
 
             await $api.put("/api/room/updateRoom", newData[index])
                 .then(value => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {IBookRoom, IRoom, TypeUser} from "../types";
+import {IBookRoom, IRoom, IUser} from "../types";
 import {IPropsTableCRUD} from "../../../common/types/crud-operation";
 import TableFactory from "../table-factory";
 import {columns} from "./config";
@@ -13,7 +13,7 @@ import {Button, DatePicker, InputNumber, Select, Space} from "antd";
 import styled from "styled-components";
 import {Typography} from "@mui/material";
 import type {DatePickerProps, RangePickerProps} from 'antd/es/date-picker';
-import {IUser} from "../../../common/types/IStore";
+import {IUserAuth} from "../../../common/types/IStore";
 // import set from "lodash/set";
 
 const {RangePicker} = DatePicker;
@@ -23,13 +23,12 @@ type HandleInputChangeType = (
     name: string
 ) => void;
 
-const User: TypeUser = {
+const User: IUser = {
     id: faker.datatype.number(),
     name: faker.name.firstName("male"),
     role: ROLES.ADMIN,
     email: faker.internet.email(),
     login: faker.internet.userName(),
-    password: faker.internet.password()
 }
 const room: IRoom = {
     id: faker.datatype.number(),
@@ -96,17 +95,17 @@ const TableBook = () => {
         setDataSource(dataFromServer)
     }, [])
 
-    useEffect(() => {
-        console.log("formData: ", formData)
-        console.log("dataSource: ", dataSource)
-    }, [formData])
+    // useEffect(() => {
+    //     console.log("formData: ", formData)
+    //     console.log("dataSource: ", dataSource)
+    // }, [formData])
 
     const deleteHandler = (data: IBookRoom) => {
         console.log("Удаляем бронь", data)
         showMessage("Бронирование номера было удалено!", "success")
     }
-    const updateHandler = (oldData: IBookRoom, newData: IBookRoom) => {
-        console.log("Обновляем бронь", oldData, newData)
+    const updateHandler = ( newData: IBookRoom) => {
+        console.log("Обновляем бронь", newData)
         showMessage("Информация о бронировании номера было изменено!", "success")
     }
     const saveHandler = (data: IBookRoom) => {
@@ -118,11 +117,10 @@ const TableBook = () => {
                 console.log(data)
                 return [...prevData, data];
             });
+            showMessage("Информация о бронировании добавлена!", "success")
         }catch (e){
             showMessage("Ошибка!", "error")
         }
-
-        showMessage("Информация о бронировании добавлена!", "success")
     }
 
 
@@ -226,7 +224,6 @@ const TableBook = () => {
                         />
                     </Space>
                 </ElementWrapper>
-
             </WrapperContent>
             <TableFactory {...prepareProps}/>
         </>

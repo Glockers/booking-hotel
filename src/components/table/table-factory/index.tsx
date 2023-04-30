@@ -47,23 +47,25 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
     const {showMessage} = useNotificationContext();
     const [loading, setLoading] = useState<boolean>(false)
 
-    const handleDelete = (key: Number) => {
+    const handleDelete = async (key: number) => {
         try {
-            setLoading(true)
-            const newData = props.dataSource.filter((item: any) => item.id !== key ? item : setElement(item));
+            setLoading(true);
+            const newData: T[] = props.dataSource.filter((item: T) => item.id !== key);
+            const element = props.dataSource.find((item: T) => item.id === key);
             if (element) {
                 props.setDataSource(newData);
-                props.deleteHandler(element);
+                await props.deleteHandler(element);
             } else {
-                showMessage("Поля не могут быть пустыми", "error")
+                showMessage("Поля не могут быть пустыми", "error");
             }
-            setLoading(false)
-
-        } catch (e) {
+        } catch (errInfo) {
             showMessage("Произошла ошибка при удалении!", "error")
-            setLoading(false)
+            console.error('Validate Failed:', errInfo);
+        } finally {
+            setLoading(false);
         }
     };
+
 
     const cancel = () => {
         setEditingKey('Произошла ошибка');
@@ -71,7 +73,7 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
         setEditingKey('');
     };
 
-    // useEffect(() => console.log(props), [props])
+    useEffect(() => console.log(element), [element])
 
     const edit = (record: T) => {
         setLoading(true)
@@ -101,14 +103,15 @@ const TableFactory = <T extends { id: number }>(props: IPropsTableCRUD<T>) => {
             }
             setEditingKey('');
             props.setDataSource(newData);
-            props.updateHandler(newData[index], row)
-            setLoading(false)
+            props.updateHandler(newData[index])
         } catch (errInfo) {
             showMessage("Произошла ошибка при изменении!", "error")
-            console.log('Validate Failed:', errInfo);
+            console.error('Validate Failed:', errInfo);
+        }finally {
             setLoading(false)
         }
     };
+
 
     const defaultColumns = [
         ...props.columns,

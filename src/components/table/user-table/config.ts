@@ -1,10 +1,14 @@
-import {IEditableColumnProps, IUser} from "../../../../components/table/types";
+import {IEditableColumnProps, IRoom, IUser} from "../types";
 
 export const columns: IEditableColumnProps<IUser>[] = [
     {
+        title: 'ID',
+        dataIndex: "id",
+        sorter: (a: IUser, b: IUser) => a.id - b.id,
+    },
+    {
         title: 'Логин',
         dataIndex: "login",
-        editable: true,
         sorter: {
             compare: (a: IUser, b: IUser) => {
                 if (a.login && b.login) {

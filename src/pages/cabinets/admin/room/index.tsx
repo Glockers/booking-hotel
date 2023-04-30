@@ -57,8 +57,6 @@ const RoomPage = () => {
     const [formData, setFormData] = useState<IRoom>({} as IRoom);
     const {showMessage} = useNotificationContext();
 
-
-
     useEffect(() => {
         try {
             // console.log("Загрузка с сервера...", dataFromServer)

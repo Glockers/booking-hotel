@@ -2,13 +2,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import {AppDispatch, RootState} from "../../store/store";
 import {ROLES} from "../role";
 export interface IRepositoryStateAuth {
-    user: IUser,
+    user: IUserAuth,
     isLogged: boolean,
     isLoading: boolean
 }
 
 
-export interface IUser{
+export interface IUserAuth {
     id?: number,
     login?: string,
     name?: string,

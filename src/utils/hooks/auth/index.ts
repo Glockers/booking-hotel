@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {ROLES} from "../../../common/role";
-import {IUser, useAppSelector} from "../../../common/types/IStore";
+import {IUserAuth, useAppSelector} from "../../../common/types/IStore";
 
 export const useAuth = (): ROLES | null | undefined => {
 
@@ -12,7 +12,7 @@ export const useAuth = (): ROLES | null | undefined => {
         setFlag(true)
         const userString = sessionStorage.getItem("user");
         if (userString) {
-            const user: IUser = JSON.parse(userString);
+            const user: IUserAuth = JSON.parse(userString);
             setRole(user.role);
         }
     }, []);

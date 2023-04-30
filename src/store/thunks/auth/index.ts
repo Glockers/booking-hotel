@@ -1,11 +1,11 @@
 import {createAsyncThunk} from '@reduxjs/toolkit'
 
-import {IUser} from "../../../common/types/IStore";
+import {IUserAuth} from "../../../common/types/IStore";
 import {axiosPublic} from "../../../utils/axios";
 
 export const loginUser = createAsyncThunk(
     'auth/login',
-    async (data: IUser, { rejectWithValue }) => {
+    async (data: IUserAuth, { rejectWithValue }) => {
         try {
             const response = await axiosPublic.post('api/auth/login', data)
             sessionStorage.setItem('token', response.data.jwt)
@@ -23,7 +23,7 @@ export const loginUser = createAsyncThunk(
 
 export const registerUser = createAsyncThunk(
     'auth/register',
-    async (data: IUser, { rejectWithValue }) => {
+    async (data: IUserAuth, { rejectWithValue }) => {
         try {
             const response = await axiosPublic.post('api/auth/register', data)
             console.log(response)
