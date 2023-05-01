@@ -1,6 +1,5 @@
 import React from 'react';
 import {Navigate, Route, Routes} from "react-router";
-import {ROLES} from "../common/role";
 import HomePage from "./home";
 import {useAuth} from "../utils/hooks/auth";
 import {UsersPage} from "./cabinets/admin/users";
@@ -18,6 +17,7 @@ import PageReservation from "./cabinets/admin/reservation";
 import PageReport from "./cabinets/admin/report";
 import PageAdminDashboard from "./cabinets/admin/dashboard";
 import RoomPage from "./cabinets/admin/room";
+import {ROLES} from "../common/enum";
 const commonRoute = [
     <Route index path="/" element={<HomePage/>}/>,
     <Route path="/catalog" element={<Catalog/>}/>,

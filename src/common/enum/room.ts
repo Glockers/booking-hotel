@@ -1,5 +1,0 @@
-export enum ENUM_ROOM_FREEDOM {
-    OCCUPIED = 'OCCUPIED',
-    FREE = 'FREE',
-    BOOKED = "BOOKED"
-}

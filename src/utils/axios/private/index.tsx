@@ -12,7 +12,7 @@ export const $api = axios.create({
 
 $api.interceptors.request.use(async function (config) {
     // config.headers.Authorization = `Bearer ${sessionStorage.getItem("token")}`;
-
+    console.log(config.data)
     return config;
 }, (error)=>Promise.reject(error))
 

@@ -1,4 +1,5 @@
-import {IEditableColumnProps, IRoom} from "../../../../components/table/types";
+import {IRoom} from "../../../../common/dto";
+import {IEditableColumnProps} from "../../../../common/types/table";
 
 export const columns: IEditableColumnProps<IRoom>[] = [
     {

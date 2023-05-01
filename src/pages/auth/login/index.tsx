@@ -2,7 +2,7 @@ import React, {Fragment, memo} from 'react';
 import { TextField, Typography} from "@mui/material";
 import styled from "styled-components";
 import AppLoadingButton from "../../../components/buttons/loading-buttons";
-import {IAuthProps} from "../../../common/types/AuthTypes";
+import {IAuthProps} from "../../../common/types/auth";
 
 const Span = styled.span`
   color: blue;

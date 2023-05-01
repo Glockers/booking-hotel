@@ -1,4 +1,5 @@
-import {IEditableColumnProps, IUser} from "../../../../components/table/types";
+import {IUser} from "../../../../common/dto";
+import {IEditableColumnProps} from "../../../../common/types/table";
 
 export const columns: IEditableColumnProps<IUser>[] = [
     {

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {IRoom} from "../../../../components/table/types";
-import {TYPE_CLASS_ROOM} from "../../../../common/enum/room-class";
+import {IRoom} from "../../../../common/dto";
 import {Button, InputNumber, Select} from "antd";
 import useNotification from "../../../../utils/hooks/notification";
 import TableRoom from "../../../../components/table/room-table";
@@ -11,6 +10,7 @@ import {$api, axiosPublic} from "../../../../utils/axios";
 
 import {Simulate} from "react-dom/test-utils";
 import {useNotificationContext} from "../../../../utils/context/notificationContext";
+import {TYPE_CLASS_ROOM} from "../../../../common/enum";
 
 // const dataFromServer: IRoom[] = [
 //     {

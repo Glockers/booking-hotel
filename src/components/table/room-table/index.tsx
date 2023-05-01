@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, InputNumber, message, Popconfirm, Space, Table, TableProps} from 'antd';
-import {EditableCellProps, IEditableColumnProps, ITableProps, IRoom, IServices} from "../types";
+import {IRoom, IServices} from "../../../common/dto";
 import {$api, axiosPublic} from "../../../utils/axios";
 import {useNotificationContext} from "../../../utils/context/notificationContext";
+import {EditableCellProps, IEditableColumnProps, ITableProps} from "../../../common/types/table";
 
 const EditableCell: React.FC<EditableCellProps> = ({
                                                        editing,

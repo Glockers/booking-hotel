@@ -1,8 +1,8 @@
 import {GridRowsProp} from "@mui/x-data-grid-pro";
 import {randomEmail, randomId, randomTraderName, randomUserName} from "@mui/x-data-grid-generator";
-import {ROLES} from "../../../role";
-import {IUser} from "../../../../components/table/types";
+import {IUser} from "../../../dto";
 import {faker} from "@faker-js/faker";
+import {ROLES} from "../../../enum";
 
 
 export const initialRows: GridRowsProp = [

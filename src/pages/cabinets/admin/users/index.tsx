@@ -15,5 +15,3 @@ export function UsersPage() {
         </>
     )
 }
-
-export default React.memo(UsersPage)

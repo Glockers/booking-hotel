@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form, Input, InputNumber, message, Popconfirm, Space, Table, TableProps} from 'antd';
-import {EditableCellProps, IBookRoom, IEditableColumnProps, ITableProps, IRoom, IServices} from "../types";
-import {CRUDOperation, IPropsTableCRUD} from "../../../common/types/crud-operation";
+import {Button, Form, Input, InputNumber, Popconfirm, Space, Table, TableProps} from 'antd';
 import {useNotificationContext} from "../../../utils/context/notificationContext";
+import {EditableCellProps, IPropsTableCRUD} from "../../../common/types/table";
 
 const EditableCell: React.FC<EditableCellProps> = ({
                                                        editing,

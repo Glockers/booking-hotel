@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {IUser} from "../types";
+import {IUser} from "../../../common/dto";
 import TableFactory from "../table-factory";
 import {useNotificationContext} from "../../../utils/context/notificationContext";
-import {IPropsTableCRUD} from "../../../common/types/crud-operation";
 import {columns} from "./config";
 import {$api} from "../../../utils/axios";
 import {Button, InputNumber, Space} from "antd";
 import {Typography} from "@mui/material";
 import styled from "styled-components";
 import {CSVLink} from "react-csv";
+import {IPropsTableCRUD} from "../../../common/types/table";
 
 
 const WrapperContent = styled.div`

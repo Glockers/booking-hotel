@@ -1,7 +1,7 @@
 import {createAsyncThunk} from '@reduxjs/toolkit'
 
-import {IUserAuth} from "../../../common/types/IStore";
 import {axiosPublic} from "../../../utils/axios";
+import {IUserAuth} from "../../../common/types/auth";
 
 export const loginUser = createAsyncThunk(
     'auth/login',
@@ -15,7 +15,7 @@ export const loginUser = createAsyncThunk(
             if (error.response && error.response.data.message) {
                 return rejectWithValue(error.response.data.message)
             } else {
-                return rejectWithValue(error.message)
+                throw error
             }
         }
     },

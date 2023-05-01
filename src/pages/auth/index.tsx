@@ -7,7 +7,8 @@ import RegisterPage from "./register/index.jsx";
 import {useNavigate} from "react-router";
 import LoginPage from "./login";
 import {loginUser, registerUser} from "../../store/thunks/auth";
-import {useAppDispatch, useAppSelector} from "../../common/types/IStore"
+import {useAppDispatch, useAppSelector} from "../../common/types/store";
+import {useNotificationContext} from "../../utils/context/notificationContext";
 
 const Root = styled.div`
   display: flex;
@@ -39,6 +40,7 @@ const AuthRootComponent: FC = memo((): JSX.Element => {
     const [repeatPassword, setRepeatPassword] = useState('')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
+    const {showMessage} = useNotificationContext();
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -63,7 +65,8 @@ const AuthRootComponent: FC = memo((): JSX.Element => {
 
         if (location.pathname === '/login') {
             try {
-               await dispatch(loginUser(dataLoginUser));
+                await dispatch(loginUser(dataLoginUser));
+                showMessage("Вы успешно авторизовались", "success")
             } catch (e: any) {
                 navigate("/login");
                 throw new Error(e)
@@ -72,9 +75,9 @@ const AuthRootComponent: FC = memo((): JSX.Element => {
             try {
                 await dispatch(registerUser(dataRegisterUser))
                 navigate("/reg");
-
+                showMessage("Вы успешно зарегистрировались", "success")
             } catch (e: any) {
-                console.log(e)
+                console.error(e)
             }
 
         } else {

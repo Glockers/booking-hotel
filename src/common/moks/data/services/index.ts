@@ -1,6 +1,6 @@
 import {GridRowsProp} from "@mui/x-data-grid-pro";
 import {randomId, randomInt, randomJobTitle, randomPrice} from "@mui/x-data-grid-generator";
-import {IServices} from "../../../../components/table/types";
+import {IServices} from "../../../dto";
 import {faker} from "@faker-js/faker";
 
 export const initialRows: GridRowsProp = [

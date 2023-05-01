@@ -1,27 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {IBookRoom, IRoom, IUser} from "../types";
-import {IPropsTableCRUD} from "../../../common/types/crud-operation";
+import {IBookRoom, IRoom, IUser} from "../../../common/dto";
 import TableFactory from "../table-factory";
 import {columns} from "./config";
-import {TYPE_CLASS_ROOM} from "../../../common/enum/room-class";
 import {faker} from "@faker-js/faker";
-import {ENUM_ROOM_FREEDOM} from "../../../common/enum/room";
-import {ENUM_RESERVATION} from "../../../common/enum/book";
-import {ROLES} from "../../../common/role";
 import {useNotificationContext} from "../../../utils/context/notificationContext";
-import {Button, DatePicker, InputNumber, Select, Space} from "antd";
+import {Button, DatePicker, InputNumber, Space} from "antd";
 import styled from "styled-components";
 import {Typography} from "@mui/material";
 import type {DatePickerProps, RangePickerProps} from 'antd/es/date-picker';
-import {IUserAuth} from "../../../common/types/IStore";
-// import set from "lodash/set";
+import {IPropsTableCRUD} from "../../../common/types/table";
+import {ENUM_RESERVATION, ENUM_ROOM_FREEDOM, ROLES, TYPE_CLASS_ROOM} from "../../../common/enum";
+import {$api} from "../../../utils/axios";
+import {CSVLink} from "react-csv";
 
 const {RangePicker} = DatePicker;
 
-type HandleInputChangeType = (
-    value: any,
-    name: string
-) => void;
+type HandleInputChangeType = (value: any, name: string | string[]) => void;
+
 
 const User: IUser = {
     id: faker.datatype.number(),
@@ -41,8 +36,8 @@ const dataFromServer: IBookRoom[] = [
     {
         id: 1,
         room,
-        endDate: new Date(faker.date.past()),
-        startDate: new Date(faker.date.future()),
+        dateStart: new Date(faker.date.past()),
+        dateEnd: new Date(faker.date.future()),
         status: ENUM_RESERVATION.UNPAID,
         guestsCount: 3,
         user: User,
@@ -50,8 +45,8 @@ const dataFromServer: IBookRoom[] = [
     {
         id: 2,
         room,
-        endDate: new Date(faker.date.past()),
-        startDate: new Date(faker.date.future()),
+        dateStart: new Date(faker.date.past()),
+        dateEnd: new Date(faker.date.future()),
         status: ENUM_RESERVATION.PAID,
         guestsCount: 2,
         user: User
@@ -91,45 +86,96 @@ const TableBook = () => {
     const [formData, setFormData] = useState<IBookRoom>({} as IBookRoom);
 
     useEffect(() => {
-        console.log("Загрузка данных с сервера...", dataFromServer)
-        setDataSource(dataFromServer)
+        try {
+            $api.get<IBookRoom[]>("/api/booking/getAll")
+                .then(value => {
+                    console.log("[GET]", value.data)
+                    setDataSource(value.data)
+                    showMessage("Данные загружены", "success");
+                }).catch(error => console.error(error))
+        } catch (e) {
+            showMessage("Произошла ошибка при загрузке данных", "error");
+        }
     }, [])
-
+    //
     // useEffect(() => {
-    //     console.log("formData: ", formData)
-    //     console.log("dataSource: ", dataSource)
+    //     console.log(formData)
     // }, [formData])
 
     const deleteHandler = (data: IBookRoom) => {
-        console.log("Удаляем бронь", data)
-        showMessage("Бронирование номера было удалено!", "success")
+        $api.post("/api/booking/delete", data)
+            .then(value => {
+                showMessage("Бронирование было удалено!", "success")
+            }).catch(error => console.error(error))
     }
-    const updateHandler = ( newData: IBookRoom) => {
-        console.log("Обновляем бронь", newData)
-        showMessage("Информация о бронировании номера было изменено!", "success")
+    const updateHandler = async (data: IBookRoom) => {
+
+        await $api.put("/api/booking/update", data)
+            .then(value => {
+                showMessage("Информация о бронировании была изменена", "success")
+            }).catch(reason => {
+                if (reason?.response?.data) {
+                    showMessage(reason.response.data, "error")
+                } else {
+                    showMessage("Введен неверный формат полей.", "error")
+                }
+                console.error(reason)
+            })
     }
+
     const saveHandler = (data: IBookRoom) => {
         try {
-            console.log("Добавляем бронь", data)
+            const guestsCount = formData.guestsCount !== undefined ? formData.guestsCount : 0;
+            const user: IUser = {id: formData.user?.id} as IUser;
+            const room: IRoom = {id: formData.room?.id} as IRoom;
+            const data: Omit<IBookRoom, "id"> = {
+                user,
+                room,
+                guestsCount: guestsCount,
+                dateEnd: formData.dateEnd,
+                dateStart: formData.dateStart,
+                status: ENUM_RESERVATION.PAID
+            }
 
-            setDataSource((prevData) => {
-                data.id = faker.datatype.number()
-                console.log(data)
-                return [...prevData, data];
-            });
-            showMessage("Информация о бронировании добавлена!", "success")
-        }catch (e){
+            console.log(data)
+
+            $api.post("/api/booking/save", data)
+                .then(response => {
+                    showMessage("Информация о бронировании была добавлена.", "success")
+                    console.log(response.data)
+                    // setDataSource((prevData) => {
+                    //     return [...prevData, response.data];
+                    // });
+                }).catch(reason => {
+                if (reason?.response?.data) {
+                    showMessage(reason.response.data, "error")
+                } else {
+                    showMessage("Введен неверный формат полей.", "error")
+                }
+                console.error(reason)
+            })
+
+        } catch (e) {
+            console.error(e);
             showMessage("Ошибка!", "error")
         }
     }
 
 
     const handleInputChange: HandleInputChangeType = (value, name) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-
-        }));
+        setFormData((prevFormData) => {
+            const newData = {...prevFormData};
+            let curr: any = newData;
+            for (let i = 0; i < name.length; i++) {
+                if (i === name.length - 1) {
+                    curr[name[i]] = value;
+                } else {
+                    curr[name[i]] = curr[name[i]] || {};
+                    curr = curr[name[i]];
+                }
+            }
+            return newData;
+        });
     };
 
     const onChange = (
@@ -137,17 +183,13 @@ const TableBook = () => {
         dateString: [string, string] | string,
     ) => {
 
-            setFormData({
-                ...formData,
-                endDate: new Date(dateString[1]),
-                startDate: new Date(dateString[0])
-            });
+        setFormData({
+            ...formData,
+            dateStart: new Date(dateString[0]),
+            dateEnd: new Date(dateString[1])
+        });
 
 
-    };
-
-    const onOk = (value: DatePickerProps['value'] | RangePickerProps['value']) => {
-        console.log('onOk: ', value);
     };
 
     const prepareProps: IPropsTableCRUD<IBookRoom> = {
@@ -171,7 +213,7 @@ const TableBook = () => {
                         ID Клиента
                     </Typography>
                     <InputNumber value={formData.user?.id}
-                                 onChange={(value) => handleInputChange(value, "user.id")}
+                                 onChange={(value) => handleInputChange(value, ["user", "id"])}
                                  placeholder={"ID Клиента"}
                                  min={1}
                                  max={9999999999}
@@ -183,7 +225,7 @@ const TableBook = () => {
                         Выберите номер комнаты
                     </Typography>
                     <InputNumber value={formData.room?.id}
-                                 onChange={(value) => handleInputChange(value, "room.id")}
+                                 onChange={(value) => handleInputChange(value, ["room", "id"])}
                                  placeholder={"Номер комнаты"}
                                  min={1}
                                  max={9999999999}
@@ -199,7 +241,7 @@ const TableBook = () => {
                         </Typography>
                     </WrapperPrice>
                     <InputNumber value={formData.guestsCount}
-                                 onChange={(value) => handleInputChange(value, "guestsCount")}
+                                 onChange={(value) => handleInputChange(value, ["guestsCount"])}
                                  placeholder={"Количество людей"}
                                  min={1}
                                  max={9999999999}
@@ -215,16 +257,19 @@ const TableBook = () => {
                         </Typography>
                     </WrapperPrice>
                     <Space direction="vertical" size={12}>
-                        {/*<DatePicker showTime onChange={onChange} onOk={onOk} />*/}
                         <RangePicker
                             showTime={{format: 'HH:mm'}}
-                            // format="YYYY-MM-DD HH:mm"
+                            // format="YYYY-MM-DD"
                             onChange={onChange}
-                            // onOk={onOk}
                         />
                     </Space>
                 </ElementWrapper>
             </WrapperContent>
+            <Space style={{marginBottom: 16}}>
+                <Button type="primary">
+                    <CSVLink filename={"Список бронирования"} data={dataSource}>Экспортировать</CSVLink>
+                </Button>
+            </Space>
             <TableFactory {...prepareProps}/>
         </>
     );

@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
-import {ROLES} from "../../../common/role";
-import {IUserAuth, useAppSelector} from "../../../common/types/IStore";
+import {useAppSelector} from "../../../common/types/store";
+import {IUserAuth} from "../../../common/types/auth";
+import {ROLES} from "../../../common/enum";
 
 export const useAuth = (): ROLES | null | undefined => {
 

@@ -1,10 +1,10 @@
 import {Avatar, Button, Col, Row, Typography} from 'antd';
 import React from 'react';
-import {useAuth} from '../../utils/hooks/auth';
-import {IdcardOutlined, LockOutlined, MailOutlined, UserOutlined} from "@ant-design/icons";
+import {UserOutlined} from "@ant-design/icons";
 import styled from "styled-components";
 import './style.css'
 import {useNavigate} from "react-router-dom";
+
 const { Title, Text } = Typography;
 
 const Wrapper = styled.div`
@@ -16,27 +16,23 @@ const Root = styled.div`
 
   padding: 40px;
 `
-
-const TitleHeader = styled.h1`
-  margin: 0 0 40px 0;
-`
+// фейковые данные пользователя для отображения на странице
+const user = {
+    name: 'Иван Иванов',
+    email: 'ivanov@mail.ru',
+    id: 1,
+    login: "Glockers"
+};
 
 const ProfilePage = () => {
 
     const navigate = useNavigate();
-    // фейковые данные пользователя для отображения на странице
-    const user = {
-        name: 'Иван Иванов',
-        email: 'ivanov@mail.ru',
-        id: 1,
-        login: "Glockers"
-    };
+
 
     const handler = ()=>{
         sessionStorage.clear();
         navigate("/");
         window.location.reload();
-
     }
     return (
         <Root>
@@ -80,7 +76,6 @@ const ProfilePage = () => {
                     </Col>
                 </Row>
             </div>
-
         </Root>
     );
 };
