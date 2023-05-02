@@ -1,39 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {IRoom} from "../../../../common/dto";
-import {Button, InputNumber, Select} from "antd";
-import useNotification from "../../../../utils/hooks/notification";
+import {Button, Input, InputNumber, Select} from "antd";
 import TableRoom from "../../../../components/table/room-table";
 import {columns} from "./config";
 import {Typography} from "@mui/material";
 import styled from "styled-components";
-import {$api, axiosPublic} from "../../../../utils/axios";
-
-import {Simulate} from "react-dom/test-utils";
+import {$api} from "../../../../utils/axios";
 import {useNotificationContext} from "../../../../utils/context/notificationContext";
 import {TYPE_CLASS_ROOM} from "../../../../common/enum";
+import {Title} from 'common/style/header';
 
-// const dataFromServer: IRoom[] = [
-//     {
-//         id: 1,
-//         room_class: TYPE_CLASS_ROOM.STANDARD,
-//         count_place: 3,
-//         price: parseFloat(faker.commerce.price()),
-//     },
-//     {
-//         id: 2,
-//         room_class: TYPE_CLASS_ROOM.LUX,
-//         count_place: 3,
-//         price: parseFloat(faker.commerce.price()),
-//     },
-// ]
 
 const WrapperContent = styled.div`
   display: flex;
   background-color: white;
   padding: 15px;
-  gap: 120px;
-  margin: 9px 0 50px;
   border-radius: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 50px 0;
 `
 
 const WrapperAction = styled.div`
@@ -42,8 +27,8 @@ const WrapperAction = styled.div`
 const ElementWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: 30%;
+  flex-basis: calc(33.33% - 10px); /* 10px для учета отступов между элементами */
+
 `
 
 const WrapperPrice = styled.div`
@@ -51,6 +36,11 @@ const WrapperPrice = styled.div`
   flex-direction: row;
   justify-content: space-between;
 `
+
+const Header = styled.h1`
+  margin-bottom: 20px;
+`
+
 
 const RoomPage = () => {
     const [dataSource, setDataSource] = useState<IRoom[]>([]);
@@ -62,7 +52,7 @@ const RoomPage = () => {
             // console.log("Загрузка с сервера...", dataFromServer)
             $api.get<IRoom[]>("/api/room/getAll")
                 .then(value => {
-                    console.log("[GET]", )
+                    console.log("[GET]",)
                     setDataSource(value.data)
                     showMessage("Данные загружены", "success");
                 }).catch(error => console.error(error))
@@ -73,10 +63,12 @@ const RoomPage = () => {
     }, [])
 
     const handleAdd = async () => {
-        const data = {
+        const data: Omit<IRoom, "id"> = {
             count_place: formData.count_place,
             roomClass: formData.roomClass,
             price: formData.price,
+            description_room: formData.description_room,
+            title_room: formData.title_room,
         }
 
         await $api.post("/api/room/addRoom", data)
@@ -90,6 +82,7 @@ const RoomPage = () => {
     }
 
     const handleInputChange: any = (value: any, name: string) => {
+        console.log(value)
         setFormData({...formData, [name]: value});
     }
 
@@ -99,6 +92,7 @@ const RoomPage = () => {
     }
     return (
         <>
+            <Title>Управление номерами</Title>
             <WrapperAction>
                 <Button onClick={handleAdd}> Добавить </Button>
             </WrapperAction>
@@ -126,9 +120,26 @@ const RoomPage = () => {
                             {value: TYPE_CLASS_ROOM.STANDARD, label: 'Стандарт'},
                             {value: TYPE_CLASS_ROOM.PREMIUM, label: 'Премиум'},
                             {value: TYPE_CLASS_ROOM.LUX, label: 'Люкс'},
-
                         ]}
 
+                    />
+                </ElementWrapper>
+
+                <ElementWrapper>
+                    <Typography fontWeight={"bold"}>
+                        Введите описание номера
+                    </Typography>
+                    <Input placeholder='Описание номера'
+                           onChange={(value) => handleInputChange(value.target.value, "description_room")}
+                    />
+                </ElementWrapper>
+                <ElementWrapper>
+                    <Typography fontWeight={"bold"}>
+                        Введите название номера
+                    </Typography>
+                    <Input
+                        placeholder='Название номера'
+                        onChange={(value) => handleInputChange(value.target.value, "title_room")}
                     />
                 </ElementWrapper>
                 <ElementWrapper>
@@ -137,7 +148,6 @@ const RoomPage = () => {
                             Стоимость номера
                         </Typography>
                         <Button onClick={handleCalculatePrice}>Высчитать автоматически</Button>
-
                     </WrapperPrice>
                     <InputNumber value={formData.price}
                                  style={{width: "100%"}}

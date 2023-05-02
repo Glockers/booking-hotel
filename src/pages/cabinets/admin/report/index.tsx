@@ -1,17 +1,36 @@
-import React, {useEffect} from 'react';
-import {Pie} from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useEffect, useState } from "react";
+import { IBookRoom } from "common/dto";
+import { useNotificationContext } from "utils/context/notificationContext";
+import { $api } from "utils/axios";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+// ChartJS.register(ArcElement, Tooltip, Legend);
 
 
 
 const PageReport = () => {
+  const [data, setData] = useState<IBookRoom[]>([] as IBookRoom[]);
+  const { showMessage } = useNotificationContext();
 
-    return (
-      <>
-      </>
-    );
+  useEffect(() => {
+    // $api.get<IBookRoom[]>("/api/user/getAll")
+    //   .then(value => {
+    //     setData(value.data)
+    //     showMessage("Данные загружены", "success");
+    //   }).catch(error => console.error(error))
+    console.log("Загрузка данных")
+
+    return () => {
+    }
+  }, [])
+
+
+  return (
+    <>
+
+    </>
+  );
 };
 
 export default PageReport;

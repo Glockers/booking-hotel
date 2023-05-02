@@ -1,6 +1,6 @@
 import React from "react";
-import {IUserAuth} from "../types/auth";
-import {ENUM_RESERVATION, ENUM_ROOM_FREEDOM, TYPE_CLASS_ROOM} from "../enum";
+import { IUserAuth } from "../types/auth";
+import { ENUM_RESERVATION, ENUM_ROOM_FREEDOM, TYPE_CLASS_ROOM } from "../enum";
 
 
 export type IUser = Required<Omit<IUserAuth, 'password'>>
@@ -17,7 +17,9 @@ export interface IRoom {
     count_place: number;
     roomClass: TYPE_CLASS_ROOM,
     price: number,
-    status?: ENUM_ROOM_FREEDOM
+    status?: ENUM_ROOM_FREEDOM,
+    title_room: string,
+    description_room: string,
 }
 
 
@@ -26,7 +28,7 @@ export interface IBookRoom {
     dateEnd: Date;
     dateStart: Date;
     guestsCount: number;
-    user:IUser;
+    user: IUser;
     room: IRoom;
     status: ENUM_RESERVATION
 }

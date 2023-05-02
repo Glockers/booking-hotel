@@ -1,5 +1,5 @@
-import {IRoom} from "../../../../common/dto";
-import {IEditableColumnProps} from "../../../../common/types/table";
+import { IRoom } from "../../../../common/dto";
+import { IEditableColumnProps } from "../../../../common/types/table";
 
 export const columns: IEditableColumnProps<IRoom>[] = [
     {
@@ -21,6 +21,32 @@ export const columns: IEditableColumnProps<IRoom>[] = [
             compare: (a: IRoom, b: IRoom) => {
                 if (a.roomClass && b.roomClass) {
                     return a.roomClass.localeCompare(b.roomClass);
+                }
+                return 0;
+            }
+        }
+    },
+    {
+        title: 'Описание номера',
+        dataIndex: 'description_room',
+        editable: true,
+        sorter: {
+            compare: (a: IRoom, b: IRoom) => {
+                if (a.description_room && b.description_room) {
+                    return a.description_room.localeCompare(b.description_room);
+                }
+                return 0;
+            }
+        }
+    },
+    {
+        title: 'Заголовок номера',
+        dataIndex: 'title_room',
+        editable: true,
+        sorter: {
+            compare: (a: IRoom, b: IRoom) => {
+                if (a.title_room && b.title_room) {
+                    return a.title_room.localeCompare(b.title_room);
                 }
                 return 0;
             }

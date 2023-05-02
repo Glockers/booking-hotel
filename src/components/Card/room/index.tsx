@@ -1,12 +1,16 @@
-import {IServices} from "common/dto";
+import React, {useState} from 'react';
 import {Button, Card, Col} from "antd";
-import {ShoppingCartOutlined} from "@ant-design/icons";
-import React, {useState} from "react";
-import styled from "styled-components";
-import {faker} from "@faker-js/faker";
+import {EditOutlined, EllipsisOutlined, HeartOutlined, SettingOutlined, ShoppingCartOutlined} from "@ant-design/icons";
+import styled from 'styled-components';
+import {faker} from '@faker-js/faker';
+import {IRoom, IUser} from "common/dto";
+import jwt_decode from "jwt-decode";
 import {useNotificationContext} from "utils/context/notificationContext";
 import DrawerBooking from "components/drawer/booking";
 import {DrawerProps} from "components/drawer/type";
+import FormBooking from "components/Form/form-booking";
+
+const {Meta} = Card;
 
 
 const MainWrapper = styled.div`
@@ -43,29 +47,41 @@ const PriceCard = styled.div`
   text-align: center;
 `
 
-
 function generateImage() {
     return faker.image.fashion()
 }
 
 
-
-export const ServiceCard = (props: IServices) => {
+const RoomCard = (props: IRoom) => {
     const {showMessage} = useNotificationContext();
+    const [open, setOpen] = useState(false);
 
     function buyHandler() {
         const userFromStorage = sessionStorage.getItem("user")
+        onOpen();
+
         if (userFromStorage) {
+
             console.log(JSON.parse(userFromStorage), props)
         } else {
-            showMessage("Авторизуйтесь перед тем как приобретать услугу!", "error");
+            showMessage("Авторизуйтесь перед тем как бронировать!", "error");
         }
     }
 
 
+    function onOpen() {
+        setOpen(true)
+    }
+
+    const prepareProps:DrawerProps ={
+        onOpen,
+        open,
+        setOpen,
+    }
 
     return (
         <>
+            <DrawerBooking {...prepareProps}><FormBooking/></DrawerBooking>
 
             <Col>
                 <Card
@@ -73,21 +89,24 @@ export const ServiceCard = (props: IServices) => {
                     hoverable
                     cover={
                         <img
-                            alt={props.name}
+                            alt="example"
                             src={generateImage()}
                         />
                     }
                     actions={[
                         // <HeartOutlined key={"heart"}/>,
-                        <Button onClick={buyHandler}><ShoppingCartOutlined key={"shop"}/>Купить</Button>
+                        <Button onClick={buyHandler}><ShoppingCartOutlined key={"shop"}/>Бронировать</Button>
                     ]}
                 >
                     <MainWrapper>
-                        <TitleCard>#{props.id} {props.name}</TitleCard>
-                        <DescCard><Description>Продолжительность услуги: {props.duration} мин.</Description></DescCard>
+                        <TitleCard>#{props.id} {props.title_room}</TitleCard>
+                        <DescCard><Description>Описание: {props.description_room}</Description></DescCard>
                         <PriceCard>Cтоимость{props.price} руб.</PriceCard>
                     </MainWrapper>
                 </Card>
             </Col>
         </>)
 }
+
+
+export default RoomCard;
