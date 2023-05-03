@@ -1,18 +1,19 @@
 import React from 'react';
-import {Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space} from 'antd';
+import {Button, Drawer, Space} from 'antd';
 import {DrawerProps} from "components/drawer/type";
+import FormBooking from "components/Form/form-booking";
 
-const { Option } = Select;
 
+type Inputs = {
+    name: string,
+};
 const DrawerBooking = (props: DrawerProps) => {
 
     const onClose = () => {
         props.setOpen(false)
     }
 
-    const onSave = ()=>{
-        props.setOpen(false);
-    }
+
     return (
         <>
             <Drawer
@@ -24,9 +25,9 @@ const DrawerBooking = (props: DrawerProps) => {
                 extra={
                     <Space>
                         <Button onClick={onClose}>Отменить</Button>
-                        <Button onClick={onSave} type="primary">
-                            Забронировать
-                        </Button>
+                        {/*<Button onClick={onSave} type="primary">*/}
+                        {/*    Забронировать*/}
+                        {/*</Button>*/}
                     </Space>
                 }
             >

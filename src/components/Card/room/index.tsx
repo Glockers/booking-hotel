@@ -1,16 +1,13 @@
 import React, {useState} from 'react';
 import {Button, Card, Col} from "antd";
-import {EditOutlined, EllipsisOutlined, HeartOutlined, SettingOutlined, ShoppingCartOutlined} from "@ant-design/icons";
+import {ShoppingCartOutlined} from "@ant-design/icons";
 import styled from 'styled-components';
 import {faker} from '@faker-js/faker';
-import {IRoom, IUser} from "common/dto";
-import jwt_decode from "jwt-decode";
+import {IBookRoom, IRoom} from "common/dto";
 import {useNotificationContext} from "utils/context/notificationContext";
 import DrawerBooking from "components/drawer/booking";
 import {DrawerProps} from "components/drawer/type";
 import FormBooking from "components/Form/form-booking";
-
-const {Meta} = Card;
 
 
 const MainWrapper = styled.div`
@@ -57,8 +54,9 @@ const RoomCard = (props: IRoom) => {
     const [open, setOpen] = useState(false);
 
     function buyHandler() {
+
+        setOpen(true)
         const userFromStorage = sessionStorage.getItem("user")
-        onOpen();
 
         if (userFromStorage) {
 
@@ -69,20 +67,26 @@ const RoomCard = (props: IRoom) => {
     }
 
 
-    function onOpen() {
-        setOpen(true)
+    const sendData = (prepareBooking: Partial<IBookRoom>) => {
+        const userFromStorage = sessionStorage.getItem("user")
+        if (userFromStorage) {
+            const parsedUser = JSON.parse(userFromStorage)
+            prepareBooking.user = parsedUser;
+            console.log(prepareBooking)
+        } else {
+            showMessage("Авторизуйтесь перед тем как бронировать!", "error");
+        }
     }
 
-    const prepareProps:DrawerProps ={
-        onOpen,
+
+    const prepareProps: DrawerProps = {
         open,
         setOpen,
     }
 
     return (
         <>
-            <DrawerBooking {...prepareProps}><FormBooking/></DrawerBooking>
-
+            <DrawerBooking {...prepareProps}><FormBooking sendData={sendData}/></DrawerBooking>
             <Col>
                 <Card
                     style={{width: "300px", padding: "10px"}}
@@ -94,7 +98,6 @@ const RoomCard = (props: IRoom) => {
                         />
                     }
                     actions={[
-                        // <HeartOutlined key={"heart"}/>,
                         <Button onClick={buyHandler}><ShoppingCartOutlined key={"shop"}/>Бронировать</Button>
                     ]}
                 >
