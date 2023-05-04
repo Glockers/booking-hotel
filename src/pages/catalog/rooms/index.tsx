@@ -1,11 +1,9 @@
-import {Form, Layout, Row} from 'antd';
+import {Layout, Row} from 'antd';
 import {IRoom} from 'common/dto';
 import React, {useEffect, useState} from 'react';
 import {axiosPublic} from 'utils/axios';
 import {ENUM_ROOM_FREEDOM, TYPE_CLASS_ROOM} from "common/enum";
 import RoomCard from "components/Card/room";
-import {FormProvider} from "antd/es/form/context";
-import FormBooking from "components/Form/form-booking";
 import {useForm} from "react-hook-form";
 
 const roomMock: IRoom = {
@@ -34,7 +32,7 @@ const RoomCatalogPage = () => {
 
             {/*<FormProvider {...methods}>*/}
             {/*    <Form layout="vertical" onSubmitCapture={methods.handleSubmit((data) => console.log(data, "test"))}>*/}
-            {/*        <FormBooking/>*/}
+            {/*        <InputTest/>*/}
             {/*        <input type={"submit"}/>*/}
             {/*    </Form>*/}
             {/*</FormProvider>*/}
@@ -42,10 +40,10 @@ const RoomCatalogPage = () => {
             <Layout>
                 <section className="catalog">
                     <Row gutter={[100, 40]} style={{padding: "30px", borderRadius: "30px"}} wrap>
-                        {/* {room.map((element) => {*/}
-                        {/*    return <RoomCard {...element} key={element.id}/>*/}
-                        {/*})}*/}
-                        <RoomCard {...roomMock}></RoomCard>
+                         {room.map((element) => {
+                            return <RoomCard {...element} key={element.id}/>
+                        })}
+                        {/*<RoomCard {...roomMock}></RoomCard>*/}
                     </Row>
                 </section>
             </Layout>

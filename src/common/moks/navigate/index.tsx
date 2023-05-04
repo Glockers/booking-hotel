@@ -47,12 +47,12 @@ export const clientNavMenu = [
         icon: <HomeOutlined />,
         path: '/',
     },
-    {
-        name: 'История услуг',
-        icon:<WalletOutlined />,
-        path: '/my-services',
-
-    },
+    // {
+    //     name: 'История услуг',
+    //     icon:<WalletOutlined />,
+    //     path: '/my-services',
+    //
+    // },
 
     {
         name: 'История Бронирований',

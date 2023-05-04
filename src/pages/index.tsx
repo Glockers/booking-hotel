@@ -41,7 +41,6 @@ const Routing = () => {
             }
             {role === ROLES.ADMIN ?
                 <Route element={<AdminCabinet/>}>
-
                     <Route path="/login" element={<Navigate to={"/profile"}/>}/>
                     <Route path="/reg" element={<Navigate to={"/profile"}/>}/>
                     <Route path="/users" element={<UsersPage/>}/>
