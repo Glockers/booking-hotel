@@ -1,10 +1,10 @@
-import React, {Suspense} from 'react'
-import {store} from "./store/store";
-import {BrowserRouter} from "react-router-dom";
-import {createGlobalStyle} from "styled-components";
-import {Provider} from "react-redux";
+import React, { Suspense } from 'react'
+import { store } from "./store/store";
+import { BrowserRouter } from "react-router-dom";
+import { createGlobalStyle } from "styled-components";
+import { Provider } from "react-redux";
 import Routing from "./pages";
-import {NotificationProvider} from "./utils/context/notificationContext";
+import { NotificationProvider } from "./utils/context/notificationContext";
 
 const Global = createGlobalStyle`
   html, body {
@@ -31,22 +31,22 @@ const Global = createGlobalStyle`
   }
 `
 const App = (): JSX.Element => {
-    return (
-        <>
-            <Global/>
+  return (
+    <>
+      <Global />
 
-            <BrowserRouter>
-                <Provider store={store}>
-                    <Suspense fallback="Загрузка">
-                        <NotificationProvider>
-                            <Routing/>
-                        </NotificationProvider>
-                    </Suspense>
-                </Provider>
-            </BrowserRouter>
+      <BrowserRouter>
+        <Provider store={store}>
+          <Suspense fallback="Загрузка">
+            <NotificationProvider>
+              <Routing />
+            </NotificationProvider>
+          </Suspense>
+        </Provider>
+      </BrowserRouter>
 
-        </>
-    )
+    </>
+  )
 };
 
 export default App
